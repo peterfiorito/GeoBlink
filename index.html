@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <title>GeoBlink Test</title>
+    <!-- Add bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <!-- Added a font -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">  
+    <!-- Add stylesheets -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/seachbar.css">
+    <link rel="stylesheet" href="css/productlist.css">
+    <!-- Add favicon -->
+    <link rel="icon" type="image/png" href="favicon.ico" />
+
+    <!-- Include the AngularJS library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>   
+
+  </head>
+  <!-- Define main angularapp -->
+  <body ng-app="GeoBlinkApp">
+  <!-- Define controller -->
+  <div ng-controller="geoCtrl" class="content">
+    <label>Choose a browser from this list:
+    <input class="input form-control" list="Countries" name="myCountry" ng-model = "CountryList" ng-change="test(country)"/></label>
+    <datalist id="Countries">
+      <option ng-repeat="country in countries" value="{{country}}" data-id= {{country}}></option>
+    </datalist>
+
+    <div ng-repeat="item in favouriteList" ng-click="removeItem(item)" class="">
+      <div>{{country}}</div>
+  </div>
+  <div ng-show="alertAddMessage" ng-click="hideAlert()" class="alert-message mb-2">
+        <span>You already selected that country!<span class="right mr-1">X</span></span></div>
+  </body>
+
+  <script>
+    //define app and main controller
+    var GeoBlinkApp = angular.module("GeoBlinkApp",[]);
+    GeoBlinkApp.controller("geoCtrl",function($scope, $http){
+
+    var countriesTemp = [];
+    $scope.favouriteList = [];
+    $scope.alertAddMessage = false;
+
+    //get the data from an API. Emulated a server on localhost with json-server
+    function getData()
+    {
+      $http({
+      method : "GET",
+      url : "http://localhost:3000/Countries"
+      }).then(function mySuccess(response)
+      {
+        countriesTemp = response.data;
+        $scope.countries = countriesTemp[0];
+
+      }, function myError(response)
+      {
+        $scope.info = response.statusText;
+      });
+    }
+
+    $scope.test = function(country){console.log(country)};
+
+    $scope.favouriteThis = function (country) {
+      if($scope.favouriteList.includes(country)){
+        $scope.alertAddMessage = true;
+      }
+      else{
+      $scope.favouriteList.push(country);
+      }
+      $scope.testfav();
+      $scope.favouriteShow = true;
+      $scope.showIt = true;
+    };
+
+    //remove items from favourite list
+    $scope.removeItem = function (item) {
+      var index = $scope.favouriteList.indexOf(item);
+
+      if (index > -1) {
+        $scope.favouriteList.splice(index, 1);
+      }
+    };
+
+    //closes alert message displayed on attempt to add an already favourited product
+    $scope.hideAlert = function(){
+      $scope.alertAddMessage = false;
+    };
+
+    //initiate
+    getData();           
+  });
+  </script>
+  </html>
+   
