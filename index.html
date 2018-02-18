@@ -18,7 +18,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>   
 
   </head>
-  <!-- Define main angularapp -->
+  <!-- Define main angular app -->
   <body ng-app="GeoBlinkApp">
   <!-- Define controller -->
   <div ng-controller="geoCtrl" class="content">
@@ -35,83 +35,12 @@
           </div>
         </div>
       <div ng-show="alertAddMessage" ng-click="hideAlert()" class="alert-message mb-2">
-          <span>You already selected that country!<span class="right mr-1">X</span></span>
+          <span>You already selected that country!<span class="right mr-1 cross">x</span></span>
       </div>
     </div>
   </div>
   </body>
-
-  <script>
-    //define app and main controller
-    var GeoBlinkApp = angular.module("GeoBlinkApp",[]);
-    GeoBlinkApp.controller("geoCtrl",function($scope, $http){
-
-    var countriesTemp = [];
-    $scope.countries;
-    $scope.favouriteList = [];
-    $scope.alertAddMessage = false;
-    $scope.cols = 100;
-
-    //get the data from an API. Emulated a server on localhost with json-server
-    function getData()
-    {
-      $http({
-      method : "GET",
-      url : "http://localhost:3000/Countries"
-      }).then(function mySuccess(response)
-      {
-        countriesTemp = response.data;
-        $scope.countries = countriesTemp[0];
-
-      }, function myError(response)
-      {
-        $scope.info = response.statusText;
-      });
-    }
-
-    $scope.favouriteThis = function () {
-      var country = this.CountryList;
-
-      if(Object.values($scope.countries).indexOf(country) > -1){
-        var query = country;
-      }
-      if($scope.favouriteList.includes(query) && query)
-      {
-        $scope.alertAddMessage = true;
-        this.CountryList = "";
-      }
-      else if (query)
-      {
-        $scope.favouriteList.push(query);
-        let aprox = query.length;
-        let len = aprox * 10;
-        $scope.cols += len;
-        this.CountryList = "";
-      }
-
-      $scope.favouriteShow = true;
-    };
-
-    //remove items from favourite list
-    $scope.removeItem = function (item) {
-      var index = $scope.favouriteList.indexOf(item);
-
-      if (index > -1) {
-        $scope.favouriteList.splice(index, 1);
-        let aprox = item.length;
-        let len = aprox * 10;
-        $scope.cols -= len;
-      }
-    };
-
-    //closes alert message displayed on attempt to add an already favourited product
-    $scope.hideAlert = function(){
-      $scope.alertAddMessage = false;
-    };
-
-    //initiate
-    getData();           
-  });
-  </script>
+  <!-- Load Main App and Controller -->
+  <script src="js/GeoBlinkApp.js"></script>   
   </html>
    
